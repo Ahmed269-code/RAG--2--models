@@ -91,7 +91,7 @@ def load_vectorstore():
 
 # ------------------------ Streamlit UI ------------------------
 st.set_page_config(page_title="RAGChat", layout="wide")
-st.title("🧠 RAGChat: Gemini-2.0 or FLAN-T5")
+st.title("RAGChat")
 
 # Dropdown model selection
 model_choice = st.selectbox("Select model to use:", ["Gemini-2.0", "FLAN-T5 Local Model"])
