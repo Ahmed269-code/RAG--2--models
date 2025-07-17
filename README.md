@@ -1,1 +1,1 @@
-# RAG--2--models
+This project is a **question-answering system** that uses Retrieval-Augmented Generation **(RAG)** to answer user questions based on real-time retrieved documents from Wikipedia. It supports two models: Google Gemini API and a local FLAN-T5 model.
