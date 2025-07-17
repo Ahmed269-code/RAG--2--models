@@ -87,7 +87,7 @@ def load_vectorstore():
 st.set_page_config(page_title="🔍 RAG QA App", layout="wide")
 st.title("RAGChat")
 
-model_choice = st.selectbox("Choose Model:", ["Gemini API", "FLAN-T5"])
+model_choice = st.selectbox("Choose Model:", ["Gemini-2.0", "FLAN-T5"])
 
 question = st.text_input("💬 Ask your question:")
 
