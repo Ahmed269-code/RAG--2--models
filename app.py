@@ -108,9 +108,9 @@ if search_clicked and question:
     st.write("⏳ Searching...")
 
     if model_choice == "Gemini-2.0":
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = st.text_input("Enter your Gemini API key:", type="password")
         if not api_key:
-            st.error("Please set your GEMINI_API_KEY in Streamlit Secrets or environment variables.")
+            st.warning("Please enter your Gemini API key to continue.")
             st.stop()
         answer = ask_gemini_api(context, question, api_key)
     else:
