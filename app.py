@@ -7,7 +7,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import bs4
-import os
 
 # ------------------------ Load Gemini API Answer ------------------------
 def ask_gemini_api(context, question, api_key):
@@ -30,8 +29,7 @@ def ask_gemini_api(context, question, api_key):
     response = requests.post(url, headers=headers, json=payload)
     try:
         result = response.json()
-        answer = result["candidates"][0]["content"]["parts"][0]["text"]
-        return answer
+        return result["candidates"][0]["content"]["parts"][0]["text"]
     except Exception as e:
         return f"Error: {e}\nResponse text: {response.text}"
 
@@ -93,24 +91,25 @@ def load_vectorstore():
 st.set_page_config(page_title="RAGChat", layout="wide")
 st.title("RAGChat")
 
-# Dropdown model selection
 model_choice = st.selectbox("Select model to use:", ["Gemini-2.0", "FLAN-T5 Local Model"])
+question = st.text_input("Ask your question:")
 
-question = st.text_input("💬 Ask your question:")
-search_clicked = st.button("🔍 Search")
+if model_choice == "Gemini-2.0":
+    api_key = st.text_input("Enter your Gemini API key:", type="password")
+
+search_clicked = st.button("Search")
 
 if search_clicked and question:
+    st.write("⏳ Searching for relevant information...")
+
     vectorstore = load_vectorstore()
     retriever = vectorstore.as_retriever()
     relevant_docs = retriever.get_relevant_documents(question)
     context = "\n\n".join(doc.page_content for doc in relevant_docs)
 
-    st.write("⏳ Searching...")
-
     if model_choice == "Gemini-2.0":
-        api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
-            st.error("Please set your GEMINI_API_KEY in Streamlit Secrets or environment variables.")
+            st.error("Please enter your Gemini API key.")
             st.stop()
         answer = ask_gemini_api(context, question, api_key)
     else:
@@ -119,8 +118,8 @@ if search_clicked and question:
         model.to(device)
         answer = answer_with_flan_t5(context, question, tokenizer, model, device)
 
-    st.subheader("📌 Answer:")
+    st.subheader("Answer:")
     st.write(answer)
 
-    with st.expander("📚 Retrieved Context"):
+    with st.expander("Retrieved Context"):
         st.write(context)
